@@ -1,0 +1,18 @@
+name: pkcs7
+description: |
+  Pkcs7 message parser and verification library
+  Can parse and generate x509 certificates, request Timestamp, build and
+  verify a s-mime PKCS #7 message.
+version: 1.0.0
+homepage: https://datatracker.ietf.org/doc/html/rfc2315
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  pem: ^2.0.0
+  pointycastle: ^3.4.0
+
+dev_dependencies:
+  flutter_lints: ^1.0.0
+  test: ^1.19.0
