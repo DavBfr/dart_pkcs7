@@ -4,6 +4,7 @@
 
 - Fix compatibility with version 1 X509 certificates
 - Add example
+- Fix lint issues
 
 ## 1.0.0
 

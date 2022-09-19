@@ -3,11 +3,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:pointycastle/api.dart';
 import 'package:pointycastle/asn1.dart';
-import 'package:pointycastle/digests/sha1.dart';
-import 'package:pointycastle/digests/sha256.dart';
-import 'package:pointycastle/digests/sha384.dart';
 import 'package:pointycastle/export.dart';
 
 /// Dignature digest to use for document authenticity verification

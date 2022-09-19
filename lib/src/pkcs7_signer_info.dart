@@ -7,30 +7,30 @@ import 'common.dart';
 /// Pkcs7 message signature
 class Pkcs7SignerInfo with Pkcs {
   /// parse a Pkcs7 message signature
-  factory Pkcs7SignerInfo(ASN1Sequence _asn1) {
-    ASN1Object? _signedAttrs;
-    ASN1Sequence? _signatureAlgorithm;
-    ASN1OctetString? _signature;
-    ASN1Object? _unsignedAttrs;
+  factory Pkcs7SignerInfo(ASN1Sequence asn1) {
+    ASN1Object? signedAttrs;
+    ASN1Sequence? signatureAlgorithm;
+    ASN1OctetString? signature;
+    ASN1Object? unsignedAttrs;
 
-    for (final e in _asn1.elements!.sublist(3)) {
+    for (final e in asn1.elements!.sublist(3)) {
       if (e.tag == 0xa0) {
-        _signedAttrs = e;
+        signedAttrs = e;
       } else if (e.tag == 0xa1) {
-        _unsignedAttrs = e;
+        unsignedAttrs = e;
       } else if (e is ASN1Sequence) {
-        _signatureAlgorithm = e;
+        signatureAlgorithm = e;
       } else if (e is ASN1OctetString) {
-        _signature = e;
+        signature = e;
       }
     }
 
     return Pkcs7SignerInfo._(
-      _asn1,
-      _signedAttrs,
-      _signatureAlgorithm!,
-      _signature!,
-      _unsignedAttrs,
+      asn1,
+      signedAttrs,
+      signatureAlgorithm!,
+      signature!,
+      unsignedAttrs,
     );
   }
 

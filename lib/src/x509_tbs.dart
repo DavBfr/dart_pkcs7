@@ -48,10 +48,10 @@ class X509Tbs with Pkcs {
     switch (publicKeyAlgorithmOI.objectIdentifierAsString) {
       case Pkcs.RsaesPkcs1:
         final s = ASN1Parser(publicKeyBytes).nextObject() as ASN1Sequence;
-        final _modulus = s.elements![0] as ASN1Integer;
-        final modulus = _modulus.integer!;
-        final _exponent = s.elements![1] as ASN1Integer;
-        final exponent = _exponent.integer!;
+        final asn1Modulus = s.elements![0] as ASN1Integer;
+        final modulus = asn1Modulus.integer!;
+        final asn1Exponent = s.elements![1] as ASN1Integer;
+        final exponent = asn1Exponent.integer!;
         return RSAPublicKey(modulus, exponent);
     }
     throw UnimplementedError('Unknown algorithm ${publicKeyAlgorithmOI.name}');
