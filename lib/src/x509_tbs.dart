@@ -9,7 +9,7 @@ import 'common.dart';
 /// An X.509 Certificate
 class X509Tbs with Pkcs {
   /// Creates a certificate from an [ASN1Sequence].
-  X509Tbs(this._tbs);
+  X509Tbs(this._tbs) : _offset = _tbs.elements![1] is ASN1Integer ? 0 : -1;
 
   /// Creates a X.509 Certificate from DER encoded bytes.
   factory X509Tbs.fromDer(Uint8List der) => X509Tbs(
@@ -25,18 +25,20 @@ class X509Tbs with Pkcs {
 
   final ASN1Sequence _tbs;
 
+  final int _offset;
+
   Uint8List? _fingerprint;
 
   /// The Public Key Algorithm of the certificate.
   ASN1ObjectIdentifier get publicKeyAlgorithmOI {
-    final key = _tbs.elements![6] as ASN1Sequence;
+    final key = _tbs.elements![_offset + 6] as ASN1Sequence;
     final sig = key.elements![0] as ASN1Sequence;
     return sig.elements![0] as ASN1ObjectIdentifier;
   }
 
   /// The Public Key Algorithm of the certificate.
   Uint8List get publicKeyBytes {
-    final key = _tbs.elements![6] as ASN1Sequence;
+    final key = _tbs.elements![_offset + 6] as ASN1Sequence;
     final str = key.elements![1] as ASN1BitString;
     return Uint8List.fromList(str.stringValues!);
   }
@@ -57,6 +59,9 @@ class X509Tbs with Pkcs {
 
   /// The version number of the certificate.
   int get version {
+    if (_offset != 0) {
+      return 1;
+    }
     final e =
         ASN1Parser(_tbs.elements!.first.valueBytes).nextObject() as ASN1Integer;
     return e.integer!.toInt() + 1;
@@ -64,34 +69,34 @@ class X509Tbs with Pkcs {
 
   /// The serial number of the certificate.
   BigInt get serialNumber {
-    final sn = _tbs.elements![1] as ASN1Integer;
+    final sn = _tbs.elements![_offset + 1] as ASN1Integer;
     return sn.integer!;
   }
 
   /// The digest Algorithm ID of the certificate.
   ASN1ObjectIdentifier get digestAlgorithmID {
-    final sig = _tbs.elements![2] as ASN1Sequence;
+    final sig = _tbs.elements![_offset + 2] as ASN1Sequence;
     return sig.elements![0] as ASN1ObjectIdentifier;
   }
 
   /// The parameters for the signature algorithm ID of the certificate.
   ASN1Object get signatureAlgorithmIDParameters {
-    final sig = _tbs.elements![2] as ASN1Sequence;
+    final sig = _tbs.elements![_offset + 2] as ASN1Sequence;
     return sig.elements![1];
   }
 
   /// The issuer of the certificate.
   Iterable<MapEntry<ASN1ObjectIdentifier, dynamic>> get issuer {
-    return namesFromAsn1(_tbs.elements![3] as ASN1Sequence);
+    return namesFromAsn1(_tbs.elements![_offset + 3] as ASN1Sequence);
   }
 
   /// The issuer of the certificate represented as asn1.
   ASN1Sequence get asn1Issuer {
     final issuer = ASN1Object.fromBytes(
-      ASN1Parser(_tbs.elements![3].encode()).nextObject().encode(),
+      ASN1Parser(_tbs.elements![_offset + 3].encode()).nextObject().encode(),
     );
     final serial = ASN1Object.fromBytes(
-      ASN1Parser(_tbs.elements![1].encode()).nextObject().encode(),
+      ASN1Parser(_tbs.elements![_offset + 1].encode()).nextObject().encode(),
     );
 
     return ASN1Sequence(elements: [issuer, serial]);
@@ -99,7 +104,7 @@ class X509Tbs with Pkcs {
 
   /// The start time which this certificate is valid.
   DateTime get notBefore {
-    final validity = _tbs.elements![4] as ASN1Sequence;
+    final validity = _tbs.elements![_offset + 4] as ASN1Sequence;
     final time = validity.elements![0];
     if (time is ASN1UtcTime) {
       return time.time!;
@@ -112,7 +117,7 @@ class X509Tbs with Pkcs {
 
   /// The end time which this certificate is valid.
   DateTime get notAfter {
-    final validity = _tbs.elements![4] as ASN1Sequence;
+    final validity = _tbs.elements![_offset + 4] as ASN1Sequence;
     final time = validity.elements![1];
     if (time is ASN1UtcTime) {
       return time.time!;
@@ -125,7 +130,7 @@ class X509Tbs with Pkcs {
 
   /// The subject of the certificate.
   Iterable<MapEntry<ASN1ObjectIdentifier, dynamic>> get subject {
-    return namesFromAsn1(_tbs.elements![5] as ASN1Sequence);
+    return namesFromAsn1(_tbs.elements![_offset + 5] as ASN1Sequence);
   }
 
   /// The digest Algorithm
