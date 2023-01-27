@@ -85,7 +85,12 @@ class X509 extends X509Tbs {
     final param = PublicKeyParameter<RSAPublicKey>(publicKey);
     final rsa = PKCS1Encoding(RSAEngine());
     rsa.init(false, param);
-    final sig = rsa.process(signature);
+    final Uint8List sig;
+    try {
+      sig = rsa.process(signature);
+    } catch (_) {
+      return false;
+    }
 
     // Expected encoded hash bytes
     final expected = derEncode(hash, digestAlgorithm);

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3
+
+- Fix certificate chain verification
+
 ## 1.0.2
 
 - Update dependencies
