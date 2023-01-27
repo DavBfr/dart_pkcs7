@@ -3,6 +3,7 @@
 ## 1.0.2
 
 - Update dependencies
+- Add organizationIdentifier OID
 
 ## 1.0.1
 

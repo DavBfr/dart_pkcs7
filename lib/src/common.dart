@@ -39,6 +39,7 @@ mixin Pkcs {
   static const sha256Nist = '2.16.840.1.101.3.4.2.1';
   static const ec256 = '1.2.840.10045.4.3.2';
   static const timestamp = '1.2.840.113549.1.9.16.2.14';
+  static const organizationIdentifier = '2.5.4.97';
 
   static const Map<HashAlgorithm, List<int>> hashAlgorithmIdentifiers =
       <HashAlgorithm, List<int>>{
@@ -131,6 +132,13 @@ mixin Pkcs {
     if (obj is ASN1ObjectIdentifier) {
       return obj.name;
     }
+    if (obj is ASN1Integer) {
+      return obj.integer.toString();
+    }
+    if (obj is ASN1Sequence) {
+      return obj.elements?.map<String>((e) => asn1ToString(e)).join(', ') ??
+          'empty sequence';
+    }
 
     return obj.toString();
   }
@@ -215,6 +223,7 @@ extension OIName on ASN1ObjectIdentifier {
       Pkcs.sha384: 'sha384',
       Pkcs.sha512: 'sha512',
       Pkcs.timestamp: 'timestamp',
+      Pkcs.organizationIdentifier: 'organizationIdentifier',
     };
 
     if (names[objectIdentifierAsString] == null) {
