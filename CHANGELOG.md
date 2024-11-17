@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5
+
+- Update Dart SDK and Pubspec
+
 ## 1.0.4
 
 - Update flutter_lints
