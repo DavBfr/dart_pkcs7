@@ -22,24 +22,28 @@ enum HashAlgorithm {
 }
 
 mixin Pkcs {
-  static const emailAddress = '1.2.840.113549.1.9.1';
-  static const signedData = '1.2.840.113549.1.7.2';
-  static const netscapeComment = '2.16.840.1.113730.1.13';
-  static const sha1WithRsaSignature = '1.2.840.113549.1.1.5';
-  static const sha1 = '1.3.14.3.2.26';
-  static const sha256 = '1.2.840.113549.1.1.11';
-  static const sha384 = '2.16.840.1.101.3.4.2.2';
-  static const sha512 = '2.16.840.1.101.3.4.2.3';
   static const contentType = '1.2.840.113549.1.9.3';
-  static const signingTime = '1.2.840.113549.1.9.5';
-  static const messageDigest = '1.2.840.113549.1.9.4';
-  static const smimeCapabilities = '1.2.840.113549.1.9.15';
   static const data = '1.2.840.113549.1.7.1';
-  static const RsaesPkcs1 = '1.2.840.113549.1.1.1';
-  static const sha256Nist = '2.16.840.1.101.3.4.2.1';
-  static const ec256 = '1.2.840.10045.4.3.2';
-  static const timestamp = '1.2.840.113549.1.9.16.2.14';
+  static const ecdsaWithSha256 = '1.2.840.10045.4.3.2';
+  static const ecdsaWithSha384 = '1.2.840.10045.4.3.3';
+  static const ecdsaWithSha512 = '1.2.840.10045.4.3.4';
+  static const emailAddress = '1.2.840.113549.1.9.1';
+  static const messageDigest = '1.2.840.113549.1.9.4';
+  static const netscapeComment = '2.16.840.1.113730.1.13';
   static const organizationIdentifier = '2.5.4.97';
+  static const rsaEncryption = '1.2.840.113549.1.1.1';
+  static const sha1 = '1.3.14.3.2.26';
+  static const sha1WithRsaSignature = '1.2.840.113549.1.1.5';
+  static const sha256 = '2.16.840.1.101.3.4.2.1';
+  static const sha256WithRSAEncryption = '1.2.840.113549.1.1.11';
+  static const sha384 = '2.16.840.1.101.3.4.2.2';
+  static const sha384WithRSAEncryption = '1.2.840.113549.1.1.12';
+  static const sha512 = '2.16.840.1.101.3.4.2.3';
+  static const sha512WithRSAEncryption = '1.2.840.113549.1.1.13';
+  static const signedData = '1.2.840.113549.1.7.2';
+  static const signingTime = '1.2.840.113549.1.9.5';
+  static const smimeCapabilities = '1.2.840.113549.1.9.15';
+  static const timestamp = '1.2.840.113549.1.9.16.2.14';
 
   static const Map<HashAlgorithm, List<int>> hashAlgorithmIdentifiers =
       <HashAlgorithm, List<int>>{
@@ -149,13 +153,17 @@ mixin Pkcs {
       case sha1WithRsaSignature:
       case sha1:
         return HashAlgorithm.sha1;
+      case ecdsaWithSha256:
       case sha256:
-      case sha256Nist:
-      case ec256:
+      case sha256WithRSAEncryption:
         return HashAlgorithm.sha256;
+      case ecdsaWithSha384:
       case sha384:
+      case sha384WithRSAEncryption:
         return HashAlgorithm.sha384;
+      case ecdsaWithSha512:
       case sha512:
+      case sha512WithRSAEncryption:
         return HashAlgorithm.sha512;
     }
 
@@ -210,20 +218,28 @@ extension OIName on ASN1ObjectIdentifier {
     }
 
     const names = <String, String>{
-      Pkcs.emailAddress: 'emailAddress',
-      Pkcs.signedData: 'signedData',
-      Pkcs.netscapeComment: 'netscape-comment',
-      Pkcs.sha1: 'sha1',
       Pkcs.contentType: 'contentType',
-      Pkcs.signingTime: 'signingTime',
-      Pkcs.messageDigest: 'messageDigest',
-      Pkcs.smimeCapabilities: 'smimeCapabilities',
       Pkcs.data: 'data',
-      Pkcs.sha256Nist: 'sha256',
-      Pkcs.sha384: 'sha384',
-      Pkcs.sha512: 'sha512',
-      Pkcs.timestamp: 'timestamp',
+      Pkcs.ecdsaWithSha256: 'ecdsaWithSha256',
+      Pkcs.ecdsaWithSha384: 'ecdsaWithSha384',
+      Pkcs.ecdsaWithSha512: 'ecdsaWithSha512',
+      Pkcs.emailAddress: 'emailAddress',
+      Pkcs.messageDigest: 'messageDigest',
+      Pkcs.netscapeComment: 'netscape-comment',
       Pkcs.organizationIdentifier: 'organizationIdentifier',
+      Pkcs.rsaEncryption: 'rsaEncryption',
+      Pkcs.sha1: 'sha1',
+      Pkcs.sha1WithRsaSignature: 'sha1WithRsaSignature',
+      Pkcs.sha256: 'sha256',
+      Pkcs.sha256WithRSAEncryption: 'sha256WithRSAEncryption',
+      Pkcs.sha384: 'sha384',
+      Pkcs.sha384WithRSAEncryption: 'sha384WithRSAEncryption',
+      Pkcs.sha512: 'sha512',
+      Pkcs.sha512WithRSAEncryption: 'sha512WithRSAEncryption',
+      Pkcs.signedData: 'signedData',
+      Pkcs.signingTime: 'signingTime',
+      Pkcs.smimeCapabilities: 'smimeCapabilities',
+      Pkcs.timestamp: 'timestamp',
     };
 
     if (names[objectIdentifierAsString] == null) {

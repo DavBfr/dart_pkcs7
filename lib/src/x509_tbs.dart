@@ -46,7 +46,7 @@ class X509Tbs with Pkcs {
   /// The Public Key Algorithm of the certificate.
   RSAPublicKey get publicKey {
     switch (publicKeyAlgorithmOI.objectIdentifierAsString) {
-      case Pkcs.RsaesPkcs1:
+      case Pkcs.rsaEncryption:
         final s = ASN1Parser(publicKeyBytes).nextObject() as ASN1Sequence;
         final asn1Modulus = s.elements![0] as ASN1Integer;
         final modulus = asn1Modulus.integer!;

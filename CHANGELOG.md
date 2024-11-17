@@ -3,6 +3,7 @@
 ## 1.0.4
 
 - Update flutter_lints
+- Update some OIDs
 
 ## 1.0.3
 
