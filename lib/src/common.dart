@@ -19,6 +19,9 @@ enum HashAlgorithm {
 
   /// Use sha512 hash
   sha512,
+
+  /// Use SM3 hash
+  sm3,
 }
 
 mixin Pkcs {
@@ -44,6 +47,7 @@ mixin Pkcs {
   static const signingTime = '1.2.840.113549.1.9.5';
   static const smimeCapabilities = '1.2.840.113549.1.9.15';
   static const timestamp = '1.2.840.113549.1.9.16.2.14';
+  static const sm2WithSM3 = '1.2.156.10197.1.501';
 
   static const Map<HashAlgorithm, List<int>> hashAlgorithmIdentifiers =
       <HashAlgorithm, List<int>>{
@@ -165,6 +169,8 @@ mixin Pkcs {
       case sha512:
       case sha512WithRSAEncryption:
         return HashAlgorithm.sha512;
+      case sm2WithSM3:
+        return HashAlgorithm.sm3;
     }
 
     throw UnimplementedError(
@@ -181,6 +187,8 @@ mixin Pkcs {
         return SHA384Digest();
       case HashAlgorithm.sha512:
         return SHA512Digest();
+      case HashAlgorithm.sm3:
+        return SM3Digest();
     }
   }
 
@@ -240,6 +248,7 @@ extension OIName on ASN1ObjectIdentifier {
       Pkcs.signingTime: 'signingTime',
       Pkcs.smimeCapabilities: 'smimeCapabilities',
       Pkcs.timestamp: 'timestamp',
+      Pkcs.sm2WithSM3: 'sm2WithSM3',
     };
 
     if (names[objectIdentifierAsString] == null) {
