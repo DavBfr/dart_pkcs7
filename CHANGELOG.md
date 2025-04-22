@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.6
+
+- Add sm3 oid support
+- Update dependencies
+
 ## 1.0.5
 
 - Update Dart SDK and Pubspec
