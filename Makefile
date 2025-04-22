@@ -1,7 +1,7 @@
 all: format
 
 format:
-	dart format lib
+	dart format .
 
 clean:
 	git clean -fdx -e .vscode

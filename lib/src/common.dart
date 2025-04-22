@@ -51,11 +51,11 @@ mixin Pkcs {
 
   static const Map<HashAlgorithm, List<int>> hashAlgorithmIdentifiers =
       <HashAlgorithm, List<int>>{
-        HashAlgorithm.sha1: <int>[1, 3, 14, 3, 2, 26],
-        HashAlgorithm.sha256: <int>[2, 16, 840, 1, 101, 3, 4, 2, 1],
-        HashAlgorithm.sha384: <int>[2, 16, 840, 1, 101, 3, 4, 2, 2],
-        HashAlgorithm.sha512: <int>[2, 16, 840, 1, 101, 3, 4, 2, 3],
-      };
+    HashAlgorithm.sha1: <int>[1, 3, 14, 3, 2, 26],
+    HashAlgorithm.sha256: <int>[2, 16, 840, 1, 101, 3, 4, 2, 1],
+    HashAlgorithm.sha384: <int>[2, 16, 840, 1, 101, 3, 4, 2, 2],
+    HashAlgorithm.sha512: <int>[2, 16, 840, 1, 101, 3, 4, 2, 3],
+  };
 
   String digestIdentifierHex(HashAlgorithm algorithm) {
     final o = ASN1ObjectIdentifier(Pkcs.hashAlgorithmIdentifiers[algorithm]);
@@ -71,10 +71,9 @@ mixin Pkcs {
     if (iter.length < 35) {
       return iter.join(':');
     }
-    final parts =
-        iter.sublist(0, 20)
-          ..add('(...)')
-          ..addAll(iter.sublist(max(20, iter.length - 10), iter.length));
+    final parts = iter.sublist(0, 20)
+      ..add('(...)')
+      ..addAll(iter.sublist(max(20, iter.length - 10), iter.length));
     return parts.join(':');
   }
 

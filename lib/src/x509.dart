@@ -26,8 +26,8 @@ class X509 extends X509Tbs {
 
   /// Creates a certificate from a PEM encoded string.
   factory X509.fromPem(String pem) => X509.fromDer(
-    Uint8List.fromList(PemCodec(PemLabel.certificate).decode(pem)),
-  );
+        Uint8List.fromList(PemCodec(PemLabel.certificate).decode(pem)),
+      );
 
   final ASN1Sequence _asn1;
 

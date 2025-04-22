@@ -173,17 +173,15 @@ class Pkcs7 with Pkcs {
       try {
         final algo = si.digestAlgorithm;
         final sign = si.signature;
-        final message =
-            ASN1Set(
-              elements:
-                  si.signedAttributes
-                      .map(
-                        (e) => ASN1Sequence(
-                          elements: [e.key, ASN1Set(elements: e.value)],
-                        ),
-                      )
-                      .toList(),
-            ).encode();
+        final message = ASN1Set(
+          elements: si.signedAttributes
+              .map(
+                (e) => ASN1Sequence(
+                  elements: [e.key, ASN1Set(elements: e.value)],
+                ),
+              )
+              .toList(),
+        ).encode();
 
         for (final cert in certs) {
           if (cert.verifySignature(sign, message, algo)) {

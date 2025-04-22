@@ -192,11 +192,10 @@ abstract class Pkcs7SignerInfoBuilder with Pkcs {
 
     // Authenticated Attributes
     if (_authenticatedAttributes.isNotEmpty) {
-      final certData =
-          _authenticatedAttributes
-              .map((x) => x.encode())
-              .expand((x) => x)
-              .toList();
+      final certData = _authenticatedAttributes
+          .map((x) => x.encode())
+          .expand((x) => x)
+          .toList();
       final cert = ASN1OctetString(
         octets: Uint8List.fromList(certData),
         tag: 0xa0,
@@ -212,11 +211,10 @@ abstract class Pkcs7SignerInfoBuilder with Pkcs {
 
     // Unauthenticated Attributes
     if (_unauthenticatedAttributes.isNotEmpty) {
-      final certData =
-          _unauthenticatedAttributes
-              .map((x) => x.encode())
-              .expand((x) => x)
-              .toList();
+      final certData = _unauthenticatedAttributes
+          .map((x) => x.encode())
+          .expand((x) => x)
+          .toList();
       final cert = ASN1OctetString(
         octets: Uint8List.fromList(certData),
         tag: 0xa1,
@@ -240,7 +238,7 @@ abstract class Pkcs7SignerInfoBuilder with Pkcs {
 /// A Pkcs7 Signer Info Builder
 class _RSAPkcs7SignerInfoBuilder extends Pkcs7SignerInfoBuilder {
   _RSAPkcs7SignerInfoBuilder(X509 issuer, this.privateKey, this.digestAlgorithm)
-    : super(issuer);
+      : super(issuer);
 
   final RSAPrivateKey privateKey;
 

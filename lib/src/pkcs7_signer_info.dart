@@ -87,16 +87,15 @@ class Pkcs7SignerInfo with Pkcs {
 
   /// Signed attributes
   Iterable<MapEntry<ASN1ObjectIdentifier, List<ASN1Object>>>
-  get signedAttributes sync* {
+      get signedAttributes sync* {
     if (_signedAttrs == null) {
       return;
     }
 
     var o = 0;
     while (o < _signedAttrs!.valueByteLength!) {
-      final c =
-          ASN1Parser(_signedAttrs!.valueBytes!.sublist(o)).nextObject()
-              as ASN1Sequence;
+      final c = ASN1Parser(_signedAttrs!.valueBytes!.sublist(o)).nextObject()
+          as ASN1Sequence;
 
       final id = c.elements![0] as ASN1ObjectIdentifier;
       final value = c.elements![1] as ASN1Set;
@@ -111,16 +110,15 @@ class Pkcs7SignerInfo with Pkcs {
 
   /// Non-signed attributes
   Iterable<MapEntry<ASN1ObjectIdentifier, List<ASN1Object>>>
-  get unsignedAttributes sync* {
+      get unsignedAttributes sync* {
     if (_unsignedAttrs == null) {
       return;
     }
 
     var o = 0;
     while (o < _unsignedAttrs!.valueByteLength!) {
-      final c =
-          ASN1Parser(_unsignedAttrs!.valueBytes!.sublist(o)).nextObject()
-              as ASN1Sequence;
+      final c = ASN1Parser(_unsignedAttrs!.valueBytes!.sublist(o)).nextObject()
+          as ASN1Sequence;
 
       final id = c.elements![0] as ASN1ObjectIdentifier;
       final value = c.elements![1] as ASN1Set;

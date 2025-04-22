@@ -17,8 +17,8 @@ class X509Tbs with Pkcs {
 
   /// Creates a certificate from a PEM encoded string.
   factory X509Tbs.fromPem(String pem) => X509Tbs.fromDer(
-    Uint8List.fromList(PemCodec(PemLabel.certificate).decode(pem)),
-  );
+        Uint8List.fromList(PemCodec(PemLabel.certificate).decode(pem)),
+      );
 
   final ASN1Sequence _tbs;
 
