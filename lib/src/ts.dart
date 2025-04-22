@@ -10,9 +10,8 @@ class TimestampResponse with Pkcs {
   const TimestampResponse(this._asn1);
 
   /// Creates a Timestamp from DER encoded bytes.
-  factory TimestampResponse.fromDer(Uint8List der) => TimestampResponse(
-        ASN1Parser(der).nextObject() as ASN1Sequence,
-      );
+  factory TimestampResponse.fromDer(Uint8List der) =>
+      TimestampResponse(ASN1Parser(der).nextObject() as ASN1Sequence);
 
   final ASN1Sequence _asn1;
 
@@ -32,17 +31,25 @@ class TimestampResponse with Pkcs {
     HashAlgorithm digestAlgorithm,
     Uint8List digest,
   ) {
-    final ts = ASN1Sequence(elements: [
-      ASN1Integer.fromtInt(1),
-      ASN1Sequence(elements: [
-        ASN1Sequence(elements: [
-          ASN1ObjectIdentifier(Pkcs.hashAlgorithmIdentifiers[digestAlgorithm]),
-          ASN1Null(),
-        ]),
-        ASN1OctetString(octets: digest),
-      ]),
-      ASN1Boolean(true),
-    ]);
+    final ts = ASN1Sequence(
+      elements: [
+        ASN1Integer.fromtInt(1),
+        ASN1Sequence(
+          elements: [
+            ASN1Sequence(
+              elements: [
+                ASN1ObjectIdentifier(
+                  Pkcs.hashAlgorithmIdentifiers[digestAlgorithm],
+                ),
+                ASN1Null(),
+              ],
+            ),
+            ASN1OctetString(octets: digest),
+          ],
+        ),
+        ASN1Boolean(true),
+      ],
+    );
 
     return ts.encode();
   }

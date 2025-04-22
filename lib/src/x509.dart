@@ -21,16 +21,13 @@ class X509 extends X509Tbs {
   X509._(this._asn1, ASN1Sequence tbs) : super(tbs);
 
   /// Creates a X.509 Certificate from DER encoded bytes.
-  factory X509.fromDer(Uint8List der) => X509(
-        ASN1Parser(der).nextObject() as ASN1Sequence,
-      );
+  factory X509.fromDer(Uint8List der) =>
+      X509(ASN1Parser(der).nextObject() as ASN1Sequence);
 
   /// Creates a certificate from a PEM encoded string.
   factory X509.fromPem(String pem) => X509.fromDer(
-        Uint8List.fromList(
-          PemCodec(PemLabel.certificate).decode(pem),
-        ),
-      );
+    Uint8List.fromList(PemCodec(PemLabel.certificate).decode(pem)),
+  );
 
   final ASN1Sequence _asn1;
 
@@ -167,18 +164,11 @@ class X509 extends X509Tbs {
       throw Exception('Certificate not yet valid: $notBefore');
     }
 
-    issuer.verifySignature(
-      signatureValue,
-      body,
-      digestAlgorithm,
-    );
+    issuer.verifySignature(signatureValue, body, digestAlgorithm);
   }
 
   /// Verify the full certification chain and returns it
-  List<X509> verifyChain(
-    List<X509> chain,
-    List<X509> trusted,
-  ) {
+  List<X509> verifyChain(List<X509> chain, List<X509> trusted) {
     if (trusted.contains(this)) {
       return [this];
     }

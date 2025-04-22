@@ -12,16 +12,13 @@ class X509Tbs with Pkcs {
   X509Tbs(this._tbs) : _offset = _tbs.elements![1] is ASN1Integer ? 0 : -1;
 
   /// Creates a X.509 Certificate from DER encoded bytes.
-  factory X509Tbs.fromDer(Uint8List der) => X509Tbs(
-        ASN1Parser(der).nextObject() as ASN1Sequence,
-      );
+  factory X509Tbs.fromDer(Uint8List der) =>
+      X509Tbs(ASN1Parser(der).nextObject() as ASN1Sequence);
 
   /// Creates a certificate from a PEM encoded string.
   factory X509Tbs.fromPem(String pem) => X509Tbs.fromDer(
-        Uint8List.fromList(
-          PemCodec(PemLabel.certificate).decode(pem),
-        ),
-      );
+    Uint8List.fromList(PemCodec(PemLabel.certificate).decode(pem)),
+  );
 
   final ASN1Sequence _tbs;
 

@@ -87,20 +87,23 @@ class Pkcs7SignerInfo with Pkcs {
 
   /// Signed attributes
   Iterable<MapEntry<ASN1ObjectIdentifier, List<ASN1Object>>>
-      get signedAttributes sync* {
+  get signedAttributes sync* {
     if (_signedAttrs == null) {
       return;
     }
 
     var o = 0;
     while (o < _signedAttrs!.valueByteLength!) {
-      final c = ASN1Parser(_signedAttrs!.valueBytes!.sublist(o)).nextObject()
-          as ASN1Sequence;
+      final c =
+          ASN1Parser(_signedAttrs!.valueBytes!.sublist(o)).nextObject()
+              as ASN1Sequence;
 
       final id = c.elements![0] as ASN1ObjectIdentifier;
       final value = c.elements![1] as ASN1Set;
       yield MapEntry<ASN1ObjectIdentifier, List<ASN1Object>>(
-          id, value.elements!);
+        id,
+        value.elements!,
+      );
 
       o += c.encodedBytes!.lengthInBytes;
     }
@@ -108,20 +111,23 @@ class Pkcs7SignerInfo with Pkcs {
 
   /// Non-signed attributes
   Iterable<MapEntry<ASN1ObjectIdentifier, List<ASN1Object>>>
-      get unsignedAttributes sync* {
+  get unsignedAttributes sync* {
     if (_unsignedAttrs == null) {
       return;
     }
 
     var o = 0;
     while (o < _unsignedAttrs!.valueByteLength!) {
-      final c = ASN1Parser(_unsignedAttrs!.valueBytes!.sublist(o)).nextObject()
-          as ASN1Sequence;
+      final c =
+          ASN1Parser(_unsignedAttrs!.valueBytes!.sublist(o)).nextObject()
+              as ASN1Sequence;
 
       final id = c.elements![0] as ASN1ObjectIdentifier;
       final value = c.elements![1] as ASN1Set;
       yield MapEntry<ASN1ObjectIdentifier, List<ASN1Object>>(
-          id, value.elements!);
+        id,
+        value.elements!,
+      );
 
       o += c.encodedBytes!.lengthInBytes;
     }
@@ -183,14 +189,16 @@ class Pkcs7SignerInfo with Pkcs {
     b.writeln('  Signed Attributes:');
     for (final entry in signedAttributes) {
       b.writeln(
-          '    ${entry.key.name}: ${entry.value.map((e) => asn1ToString(e)).join(', ')}');
+        '    ${entry.key.name}: ${entry.value.map((e) => asn1ToString(e)).join(', ')}',
+      );
     }
     b.writeln('  Signature Algorithm: ${signatureAlgorithmID.name}');
     b.writeln('  Signature: ${toHex(signature)}');
     b.writeln('  Non-signed Attributes:');
     for (final entry in unsignedAttributes) {
       b.writeln(
-          '    ${entry.key.name}: ${entry.value.map((e) => asn1ToString(e)).join(', ')}');
+        '    ${entry.key.name}: ${entry.value.map((e) => asn1ToString(e)).join(', ')}',
+      );
     }
     return b.toString();
   }

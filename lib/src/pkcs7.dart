@@ -35,7 +35,8 @@ class Pkcs7 with Pkcs {
 
     if (pkcs7.contentType.objectIdentifierAsString != Pkcs.signedData) {
       throw UnsupportedError(
-          'Not a Pkcs7 signature message (${pkcs7.contentType.objectIdentifierAsString})');
+        'Not a Pkcs7 signature message (${pkcs7.contentType.objectIdentifierAsString})',
+      );
     }
 
     return pkcs7;
@@ -50,14 +51,12 @@ class Pkcs7 with Pkcs {
   );
 
   /// Creates a Pkcs7 message from DER encoded bytes.
-  factory Pkcs7.fromDer(Uint8List der) => Pkcs7(
-        ASN1Parser(der).nextObject() as ASN1Sequence,
-      );
+  factory Pkcs7.fromDer(Uint8List der) =>
+      Pkcs7(ASN1Parser(der).nextObject() as ASN1Sequence);
 
   /// Creates a Pkcs7 message from a PEM encoded string.
-  factory Pkcs7.fromPem(String pem) => Pkcs7.fromDer(
-        Uint8List.fromList(PemCodec(PemLabel.pkcs7).decode(pem)),
-      );
+  factory Pkcs7.fromPem(String pem) =>
+      Pkcs7.fromDer(Uint8List.fromList(PemCodec(PemLabel.pkcs7).decode(pem)));
 
   final ASN1Sequence _asn1;
 
@@ -158,7 +157,8 @@ class Pkcs7 with Pkcs {
   Pkcs7SignerInfo verify(List<X509> trusted) {
     if (contentType.objectIdentifierAsString != Pkcs.signedData) {
       throw Exception(
-          'Invalid Pkcs7 message type: ${contentType.objectIdentifierAsString}');
+        'Invalid Pkcs7 message type: ${contentType.objectIdentifierAsString}',
+      );
     }
 
     final certs = certificates.toList();
@@ -173,16 +173,17 @@ class Pkcs7 with Pkcs {
       try {
         final algo = si.digestAlgorithm;
         final sign = si.signature;
-        final message = ASN1Set(
-                elements: si.signedAttributes
-                    .map((e) => ASN1Sequence(
-                          elements: [
-                            e.key,
-                            ASN1Set(elements: e.value),
-                          ],
-                        ))
-                    .toList())
-            .encode();
+        final message =
+            ASN1Set(
+              elements:
+                  si.signedAttributes
+                      .map(
+                        (e) => ASN1Sequence(
+                          elements: [e.key, ASN1Set(elements: e.value)],
+                        ),
+                      )
+                      .toList(),
+            ).encode();
 
         for (final cert in certs) {
           if (cert.verifySignature(sign, message, algo)) {

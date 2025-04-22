@@ -51,11 +51,11 @@ mixin Pkcs {
 
   static const Map<HashAlgorithm, List<int>> hashAlgorithmIdentifiers =
       <HashAlgorithm, List<int>>{
-    HashAlgorithm.sha1: <int>[1, 3, 14, 3, 2, 26],
-    HashAlgorithm.sha256: <int>[2, 16, 840, 1, 101, 3, 4, 2, 1],
-    HashAlgorithm.sha384: <int>[2, 16, 840, 1, 101, 3, 4, 2, 2],
-    HashAlgorithm.sha512: <int>[2, 16, 840, 1, 101, 3, 4, 2, 3],
-  };
+        HashAlgorithm.sha1: <int>[1, 3, 14, 3, 2, 26],
+        HashAlgorithm.sha256: <int>[2, 16, 840, 1, 101, 3, 4, 2, 1],
+        HashAlgorithm.sha384: <int>[2, 16, 840, 1, 101, 3, 4, 2, 2],
+        HashAlgorithm.sha512: <int>[2, 16, 840, 1, 101, 3, 4, 2, 3],
+      };
 
   String digestIdentifierHex(HashAlgorithm algorithm) {
     final o = ASN1ObjectIdentifier(Pkcs.hashAlgorithmIdentifiers[algorithm]);
@@ -71,9 +71,10 @@ mixin Pkcs {
     if (iter.length < 35) {
       return iter.join(':');
     }
-    final parts = iter.sublist(0, 20)
-      ..add('(...)')
-      ..addAll(iter.sublist(max(20, iter.length - 10), iter.length));
+    final parts =
+        iter.sublist(0, 20)
+          ..add('(...)')
+          ..addAll(iter.sublist(max(20, iter.length - 10), iter.length));
     return parts.join(':');
   }
 
@@ -85,7 +86,8 @@ mixin Pkcs {
 
   /// Parse a list of names
   Iterable<MapEntry<ASN1ObjectIdentifier, dynamic>> namesFromAsn1(
-      ASN1Sequence sequence) sync* {
+    ASN1Sequence sequence,
+  ) sync* {
     for (final p in sequence.elements!) {
       if (p is ASN1Set) {
         for (final q in p.elements!) {
@@ -93,7 +95,9 @@ mixin Pkcs {
             final r = q.elements![0];
             if (r is ASN1ObjectIdentifier) {
               yield MapEntry<ASN1ObjectIdentifier, dynamic>(
-                  r, asn1ToDart(q.elements![1]));
+                r,
+                asn1ToDart(q.elements![1]),
+              );
             }
           }
         }
@@ -152,7 +156,8 @@ mixin Pkcs {
   }
 
   HashAlgorithm commonDigestAlgorithm(
-      ASN1ObjectIdentifier signatureAlgorithmID) {
+    ASN1ObjectIdentifier signatureAlgorithmID,
+  ) {
     switch (signatureAlgorithmID.objectIdentifierAsString) {
       case sha1WithRsaSignature:
       case sha1:
@@ -174,7 +179,8 @@ mixin Pkcs {
     }
 
     throw UnimplementedError(
-        'Unsupported signature digest ${signatureAlgorithmID.objectIdentifierAsString}');
+      'Unsupported signature digest ${signatureAlgorithmID.objectIdentifierAsString}',
+    );
   }
 
   Digest getDigest(HashAlgorithm digestAlgorithm) {
@@ -194,13 +200,17 @@ mixin Pkcs {
 
   /// Encode a hash to a DER message
   Uint8List derEncode(Uint8List hash, HashAlgorithm digest) {
-    return ASN1Sequence(elements: [
-      ASN1Sequence(elements: [
-        ASN1ObjectIdentifier(Pkcs.hashAlgorithmIdentifiers[digest]),
-        ASN1Null(),
-      ]),
-      ASN1OctetString(octets: hash),
-    ]).encode();
+    return ASN1Sequence(
+      elements: [
+        ASN1Sequence(
+          elements: [
+            ASN1ObjectIdentifier(Pkcs.hashAlgorithmIdentifiers[digest]),
+            ASN1Null(),
+          ],
+        ),
+        ASN1OctetString(octets: hash),
+      ],
+    ).encode();
   }
 
   /// Test if two lists are equal

@@ -17,9 +17,11 @@ class Pkcs7Builder with Pkcs {
 
   final _digestAlgorithms = <ASN1Sequence>[];
 
-  final _contentInfo = ASN1Sequence(elements: [
-    ASN1ObjectIdentifier([1, 2, 840, 113549, 1, 7, 1])
-  ]);
+  final _contentInfo = ASN1Sequence(
+    elements: [
+      ASN1ObjectIdentifier([1, 2, 840, 113549, 1, 7, 1]),
+    ],
+  );
 
   final _certificates = <X509>[];
 
@@ -40,9 +42,9 @@ class Pkcs7Builder with Pkcs {
   /// Add a signature
   void addSignerInfo(Pkcs7SignerInfoBuilder signerInfo) {
     _signerInfos.add(signerInfo);
-    _digestAlgorithms.add(ASN1Sequence(elements: [
-      signerInfo.digestAlgorithmID,
-    ]));
+    _digestAlgorithms.add(
+      ASN1Sequence(elements: [signerInfo.digestAlgorithmID]),
+    );
   }
 
   /// Generate the Pkcs7 message
@@ -98,11 +100,7 @@ abstract class Pkcs7SignerInfoBuilder with Pkcs {
     HashAlgorithm digestAlgorithm = HashAlgorithm.sha1,
     required RSAPrivateKey privateKey,
   }) {
-    return _RSAPkcs7SignerInfoBuilder(
-      issuer,
-      privateKey,
-      digestAlgorithm,
-    );
+    return _RSAPkcs7SignerInfoBuilder(issuer, privateKey, digestAlgorithm);
   }
 
   /// Signing X509 Certificate
@@ -122,27 +120,37 @@ abstract class Pkcs7SignerInfoBuilder with Pkcs {
 
   /// Add the Secure/Multipurpose Internet Mail Extensions digest
   void addSMimeDigest({required Uint8List digest, DateTime? signingTime}) {
-    _authenticatedAttributes.add(ASN1Sequence(elements: [
-      ASN1ObjectIdentifier([1, 2, 840, 113549, 1, 9, 3]), // ContentType
-      ASN1Set(elements: [
-        ASN1ObjectIdentifier([1, 2, 840, 113549, 1, 7, 1]), // Data
-      ])
-    ]));
+    _authenticatedAttributes.add(
+      ASN1Sequence(
+        elements: [
+          ASN1ObjectIdentifier([1, 2, 840, 113549, 1, 9, 3]), // ContentType
+          ASN1Set(
+            elements: [
+              ASN1ObjectIdentifier([1, 2, 840, 113549, 1, 7, 1]), // Data
+            ],
+          ),
+        ],
+      ),
+    );
 
     signingTime ??= DateTime.now();
-    _authenticatedAttributes.add(ASN1Sequence(elements: [
-      ASN1ObjectIdentifier([1, 2, 840, 113549, 1, 9, 5]), // SigningTime
-      ASN1Set(elements: [
-        ASN1UtcTime(signingTime.toUtc()),
-      ])
-    ]));
+    _authenticatedAttributes.add(
+      ASN1Sequence(
+        elements: [
+          ASN1ObjectIdentifier([1, 2, 840, 113549, 1, 9, 5]), // SigningTime
+          ASN1Set(elements: [ASN1UtcTime(signingTime.toUtc())]),
+        ],
+      ),
+    );
 
-    _authenticatedAttributes.add(ASN1Sequence(elements: [
-      ASN1ObjectIdentifier([1, 2, 840, 113549, 1, 9, 4]), // MessageDigest
-      ASN1Set(elements: [
-        ASN1OctetString(octets: digest),
-      ])
-    ]));
+    _authenticatedAttributes.add(
+      ASN1Sequence(
+        elements: [
+          ASN1ObjectIdentifier([1, 2, 840, 113549, 1, 9, 4]), // MessageDigest
+          ASN1Set(elements: [ASN1OctetString(octets: digest)]),
+        ],
+      ),
+    );
   }
 
   /// Generate a Timestamp Query message
@@ -150,11 +158,24 @@ abstract class Pkcs7SignerInfoBuilder with Pkcs {
 
   /// Add a timestamp to the digest
   void addTimestamp({required TimestampResponse tsr}) {
-    _unauthenticatedAttributes.add(ASN1Sequence(elements: [
-      ASN1ObjectIdentifier(
-          [1, 2, 840, 113549, 1, 9, 16, 2, 14]), // id-aa-timeStampToken
-      ASN1Set(elements: [tsr.timeStampToken])
-    ]));
+    _unauthenticatedAttributes.add(
+      ASN1Sequence(
+        elements: [
+          ASN1ObjectIdentifier([
+            1,
+            2,
+            840,
+            113549,
+            1,
+            9,
+            16,
+            2,
+            14,
+          ]), // id-aa-timeStampToken
+          ASN1Set(elements: [tsr.timeStampToken]),
+        ],
+      ),
+    );
   }
 
   /// Message to be signed
@@ -167,17 +188,15 @@ abstract class Pkcs7SignerInfoBuilder with Pkcs {
     asn1.add(issuer.asn1Issuer); // Issuer and Serial
 
     // Digest Algorithm
-    asn1.add(ASN1Sequence(elements: [
-      digestAlgorithmID,
-      ASN1Null(),
-    ]));
+    asn1.add(ASN1Sequence(elements: [digestAlgorithmID, ASN1Null()]));
 
     // Authenticated Attributes
     if (_authenticatedAttributes.isNotEmpty) {
-      final certData = _authenticatedAttributes
-          .map((x) => x.encode())
-          .expand((x) => x)
-          .toList();
+      final certData =
+          _authenticatedAttributes
+              .map((x) => x.encode())
+              .expand((x) => x)
+              .toList();
       final cert = ASN1OctetString(
         octets: Uint8List.fromList(certData),
         tag: 0xa0,
@@ -186,22 +205,18 @@ abstract class Pkcs7SignerInfoBuilder with Pkcs {
     }
 
     // Digest Encryption Algorithm
-    asn1.add(ASN1Sequence(elements: [
-      digestEncryptionAlgorithmID,
-      ASN1Null(),
-    ]));
+    asn1.add(ASN1Sequence(elements: [digestEncryptionAlgorithmID, ASN1Null()]));
 
     // Encrypted Digest
-    asn1.add(ASN1OctetString(
-      octets: signature,
-    ));
+    asn1.add(ASN1OctetString(octets: signature));
 
     // Unauthenticated Attributes
     if (_unauthenticatedAttributes.isNotEmpty) {
-      final certData = _unauthenticatedAttributes
-          .map((x) => x.encode())
-          .expand((x) => x)
-          .toList();
+      final certData =
+          _unauthenticatedAttributes
+              .map((x) => x.encode())
+              .expand((x) => x)
+              .toList();
       final cert = ASN1OctetString(
         octets: Uint8List.fromList(certData),
         tag: 0xa1,
@@ -224,11 +239,8 @@ abstract class Pkcs7SignerInfoBuilder with Pkcs {
 
 /// A Pkcs7 Signer Info Builder
 class _RSAPkcs7SignerInfoBuilder extends Pkcs7SignerInfoBuilder {
-  _RSAPkcs7SignerInfoBuilder(
-    X509 issuer,
-    this.privateKey,
-    this.digestAlgorithm,
-  ) : super(issuer);
+  _RSAPkcs7SignerInfoBuilder(X509 issuer, this.privateKey, this.digestAlgorithm)
+    : super(issuer);
 
   final RSAPrivateKey privateKey;
 
@@ -251,10 +263,6 @@ class _RSAPkcs7SignerInfoBuilder extends Pkcs7SignerInfoBuilder {
 
   @override
   Uint8List sign(Uint8List message) {
-    return issuer.generateSignature(
-      privateKey,
-      message,
-      digestAlgorithm,
-    );
+    return issuer.generateSignature(privateKey, message, digestAlgorithm);
   }
 }

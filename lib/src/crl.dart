@@ -12,15 +12,14 @@ class CertificateRevocationList with Pkcs {
 
   /// Creates a Certificate Revocation List from DER encoded bytes.
   factory CertificateRevocationList.fromDer(Uint8List der) =>
-      CertificateRevocationList(
-        ASN1Parser(der).nextObject() as ASN1Sequence,
-      );
+      CertificateRevocationList(ASN1Parser(der).nextObject() as ASN1Sequence);
 
   /// Creates a Certificate Revocation List from a PEM encoded string.
   factory CertificateRevocationList.fromPem(String pem) =>
       CertificateRevocationList.fromDer(
         Uint8List.fromList(
-            PemCodec(PemLabel.certificateRevocationList).decode(pem)),
+          PemCodec(PemLabel.certificateRevocationList).decode(pem),
+        ),
       );
 
   final ASN1Sequence _asn1;
